@@ -1,0 +1,490 @@
+{
+  "site": {
+    "title": "PANOS RADIO",
+    "subtitle": "the free music player",
+    "favicon": ""
+  },
+  "theme": {
+    "mode": "dark",
+    "accent": "#cc0000",
+    "fontDisplay": "https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap",
+    "backgroundNoise": true
+  },
+  "livestream": {
+    "enabled": true,
+    "platform": "youtube",
+    "channelId": "UCady4gQC-j6LolQ218nxvyw",
+    "liveVideoId": "",
+    "checkInterval": 0
+  },
+  "playlist": {
+    "autoplay": false,
+    "shuffle": false,
+    "repeat": "none",
+    "volume": 0.8,
+    "tracks": [
+      {
+        "id": "track_001",
+        "title": "Kamera Strammeni Pano Mou",
+        "artist": "Active Member",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Active Member -  Kamera Strammeni Pano Mou.mp3"
+      },
+      {
+        "id": "track_002",
+        "title": "Pame (Guantanamo)",
+        "artist": "Active Member",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Active Member -  Pame (Guantanamo).mp3"
+      },
+      {
+        "id": "track_003",
+        "title": "Fylakas Aggelos",
+        "artist": "Active Member",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Active Member - Fylakas Aggelos.mp3"
+      },
+      {
+        "id": "track_004",
+        "title": "Fysaei Kontra",
+        "artist": "Active Member",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Active Member - Fysaei Kontra.mp3"
+      },
+      {
+        "id": "track_005",
+        "title": "Ιδιες Προσευχες Prod. by Eversor (Official Music Video)",
+        "artist": "Anser",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Anser - Ιδιες Προσευχες Prod. by Eversor (Official Music Video).mp3"
+      },
+      {
+        "id": "track_006",
+        "title": "Εκείνο το τίποτα",
+        "artist": "Anser x Eversor",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Anser x Eversor - Εκείνο το τίποτα.mp3"
+      },
+      {
+        "id": "track_007",
+        "title": "Louloudi",
+        "artist": "Bloody Hawk",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Bloody Hawk - Louloudi.mp3"
+      },
+      {
+        "id": "track_008",
+        "title": "Μπαλόνια",
+        "artist": "Bloody Hawk",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Bloody Hawk - Μπαλόνια.mp3"
+      },
+      {
+        "id": "track_009",
+        "title": "Το εικοσάλεπτο",
+        "artist": "Bloody Hawk",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Bloody Hawk - Το εικοσάλεπτο.mp3"
+      },
+      {
+        "id": "track_010",
+        "title": "Αεροπλάνα",
+        "artist": "Bloody Hawk, TOQUEL",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Bloody Hawk, TOQUEL - Αεροπλάνα.mp3"
+      },
+      {
+        "id": "track_011",
+        "title": "Eleutheroi-lt",
+        "artist": "Unknown",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Eleutheroi-lt.mp3"
+      },
+      {
+        "id": "track_012",
+        "title": "Όταν γνωρίσεις τον κόσμο",
+        "artist": "EpsilonPi & Kako",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/EpsilonPi & Kako - Όταν γνωρίσεις τον κόσμο.mp3"
+      },
+      {
+        "id": "track_013",
+        "title": "Etoimase Mia Efchi",
+        "artist": "Unknown",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Etoimase Mia Efchi.mp3"
+      },
+      {
+        "id": "track_014",
+        "title": "I Monaksia Sto Pezodromio",
+        "artist": "Unknown",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/I Monaksia Sto Pezodromio.mp3"
+      },
+      {
+        "id": "track_015",
+        "title": "Shin sekai",
+        "artist": "Kako",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Kako - Shin sekai.mp3"
+      },
+      {
+        "id": "track_016",
+        "title": "Εμένα οι φίλοι μου είναι (Κατερίνα Γώγου)",
+        "artist": "Magic De Spell",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Magic De Spell - Εμένα οι φίλοι μου είναι (Κατερίνα Γώγου).mp3"
+      },
+      {
+        "id": "track_017",
+        "title": "Novel 729  Άφησε Με Να Φύγω (feat. Λόγος Τιμής) (Official Audio)",
+        "artist": "Unknown",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Novel 729  Άφησε Με Να Φύγω (feat. Λόγος Τιμής) (Official Audio).mp3"
+      },
+      {
+        "id": "track_018",
+        "title": "Novel 729  Όταν (Official Audio)",
+        "artist": "Unknown",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Novel 729  Όταν (Official Audio).mp3"
+      },
+      {
+        "id": "track_019",
+        "title": "Novel 729  Ανάσανα (Official Audio)",
+        "artist": "Unknown",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Novel 729  Ανάσανα (Official Audio).mp3"
+      },
+      {
+        "id": "track_020",
+        "title": "Novel 729  Επίσκεψη feat. Lobo",
+        "artist": "Unknown",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Novel 729  Επίσκεψη feat. Lobo.mp3"
+      },
+      {
+        "id": "track_021",
+        "title": "Novel 729  Ετοιμάζομαι (Official Video",
+        "artist": "Unknown",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Novel 729  Ετοιμάζομαι (Official Video.mp3"
+      },
+      {
+        "id": "track_022",
+        "title": "Novel 729  Θύελλα (Official Audio)",
+        "artist": "Unknown",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Novel 729  Θύελλα (Official Audio).mp3"
+      },
+      {
+        "id": "track_023",
+        "title": "Novel 729  Λίγο Ακόμα (feat. Bloody Hawk) (Official Audio)",
+        "artist": "Unknown",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Novel 729  Λίγο Ακόμα (feat. Bloody Hawk) (Official Audio).mp3"
+      },
+      {
+        "id": "track_024",
+        "title": "Novel 729  Λυγμός (Official Audio)",
+        "artist": "Unknown",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Novel 729  Λυγμός (Official Audio).mp3"
+      },
+      {
+        "id": "track_025",
+        "title": "Novel 729  Μη φοβάσαι όταν πέφτω",
+        "artist": "Unknown",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Novel 729  Μη φοβάσαι όταν πέφτω.mp3"
+      },
+      {
+        "id": "track_026",
+        "title": "Novel 729  Πανσέληνος",
+        "artist": "Unknown",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Novel 729  Πανσέληνος.mp3"
+      },
+      {
+        "id": "track_027",
+        "title": "Novel 729  Στιχοθεραπεία feat. Ελεύθερο Πνεύμα (Λόγος Τιμής)",
+        "artist": "Unknown",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Novel 729  Στιχοθεραπεία feat. Ελεύθερο Πνεύμα (Λόγος Τιμής).mp3"
+      },
+      {
+        "id": "track_028",
+        "title": "Novel 729  Τελευταία Σελήνη (Official Audio)",
+        "artist": "Unknown",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Novel 729  Τελευταία Σελήνη (Official Audio).mp3"
+      },
+      {
+        "id": "track_029",
+        "title": "Κάπου το'χω ξαναζήσει",
+        "artist": "Novel 729",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Novel 729 - Κάπου το'χω ξαναζήσει.mp3"
+      },
+      {
+        "id": "track_030",
+        "title": "ΝΑΡΚΕΣ",
+        "artist": "Novel 729 x Ελεύθερο Πνεύμα (Λόγος Τιμής)",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Novel 729 x Ελεύθερο Πνεύμα (Λόγος Τιμής) - ΝΑΡΚΕΣ.mp3"
+      },
+      {
+        "id": "track_031",
+        "title": "Θυμάμαι τα πάντα",
+        "artist": "Rio",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Rio - Θυμάμαι τα πάντα.mp3"
+      },
+      {
+        "id": "track_032",
+        "title": "Χαμένα Βήματα",
+        "artist": "Rio",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Rio - Χαμένα Βήματα.mp3"
+      },
+      {
+        "id": "track_033",
+        "title": "Για να νικήσουν",
+        "artist": "Social Waste",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Social Waste - Για να νικήσουν.mp3"
+      },
+      {
+        "id": "track_034",
+        "title": "Λένε",
+        "artist": "Social Waste",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Social Waste - Λένε.mp3"
+      },
+      {
+        "id": "track_035",
+        "title": "Σκέφτομαι και Νιώθω (ft. dPans x Marseaux)",
+        "artist": "Stk",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Stk - Σκέφτομαι και Νιώθω (ft. dPans x Marseaux).mp3"
+      },
+      {
+        "id": "track_036",
+        "title": "Όταν σε είδα ξανά",
+        "artist": "Taf Lathos",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Taf Lathos - Όταν σε είδα ξανά.mp3"
+      },
+      {
+        "id": "track_037",
+        "title": "Το Μετά",
+        "artist": "Taf Lathos",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Taf Lathos - Το Μετά.mp3"
+      },
+      {
+        "id": "track_038",
+        "title": "κενά",
+        "artist": "still.vi",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/still.vi - κενά.mp3"
+      },
+      {
+        "id": "track_039",
+        "title": "happillnes",
+        "artist": "stk",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/stk - happillnes.mp3"
+      },
+      {
+        "id": "track_040",
+        "title": "Άμα ρωτήσουν που χάθηκα",
+        "artist": "Unknown",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Άμα ρωτήσουν που χάθηκα.mp3"
+      },
+      {
+        "id": "track_041",
+        "title": "Αμα ρωτησουν που χαθηκα",
+        "artist": "Βεβηλος  Anser",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Βεβηλος  Anser -  Αμα ρωτησουν που χαθηκα.mp3"
+      },
+      {
+        "id": "track_042",
+        "title": "Hiphopolis",
+        "artist": "Βεβηλος  Μορφεας  Παραφρων",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Βεβηλος  Μορφεας  Παραφρων - Hiphopolis.mp3"
+      },
+      {
+        "id": "track_043",
+        "title": "Aνασφάλεια  Anasfalia (Official Audio)",
+        "artist": "Ελεύθερο Πνεύμα (Λόγος Τιμής) X Novel 729 X Lobo",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Ελεύθερο Πνεύμα (Λόγος Τιμής) X Novel 729 X Lobo - Aνασφάλεια  Anasfalia (Official Audio).mp3"
+      },
+      {
+        "id": "track_044",
+        "title": "ΑΛΗΤΙΚΗ ΑΓΑΠΗ  LEX - ALITIKI AGAPI (PROD BY DOF TWOGEE)",
+        "artist": "ΛΕΞ",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/ΛΕΞ - ΑΛΗΤΙΚΗ ΑΓΑΠΗ  LEX - ALITIKI AGAPI (PROD BY DOF TWOGEE).mp3"
+      },
+      {
+        "id": "track_045",
+        "title": "Από την πόλη που καίγεται feat. El Stefanato",
+        "artist": "Λόγος Τιμής",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Λόγος Τιμής - Από την πόλη που καίγεται feat. El Stefanato.mp3"
+      },
+      {
+        "id": "track_046",
+        "title": "Αόρατη Σιωπή",
+        "artist": "Λόγος Τιμής",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Λόγος Τιμής - Αόρατη Σιωπή.mp3"
+      },
+      {
+        "id": "track_047",
+        "title": "Ευθύνομαι (2015)",
+        "artist": "Λόγος Τιμής",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Λόγος Τιμής - Ευθύνομαι (2015).mp3"
+      },
+      {
+        "id": "track_048",
+        "title": "Ηλιοβασιλέματα  (Official Music Video)",
+        "artist": "Λόγος Τιμής",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Λόγος Τιμής - Ηλιοβασιλέματα  (Official Music Video).mp3"
+      },
+      {
+        "id": "track_049",
+        "title": "Ηφαίστεια (Official Music Video)",
+        "artist": "Λόγος Τιμής",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Λόγος Τιμής - Ηφαίστεια (Official Music Video).mp3"
+      },
+      {
+        "id": "track_050",
+        "title": "Κάτω Απ'την Ακρόπολη  Logos Timis - Kato Ap'tin Akropoli (Official Audio)",
+        "artist": "Λόγος Τιμής",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Λόγος Τιμής - Κάτω Απ'την Ακρόπολη  Logos Timis - Kato Ap'tin Akropoli (Official Audio).mp3"
+      },
+      {
+        "id": "track_051",
+        "title": "Καμικάζι αγάπη μου",
+        "artist": "Λόγος Τιμής",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Λόγος Τιμής - Καμικάζι αγάπη μου.mp3"
+      },
+      {
+        "id": "track_052",
+        "title": "Νιώθεις (Official Audio)",
+        "artist": "Λόγος Τιμής",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Λόγος Τιμής - Νιώθεις (Official Audio).mp3"
+      },
+      {
+        "id": "track_053",
+        "title": "Νιώθω Έντονα",
+        "artist": "Λόγος Τιμής",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Λόγος Τιμής - Νιώθω Έντονα.mp3"
+      },
+      {
+        "id": "track_054",
+        "title": "Οικογένεια  Logos Timis - Oikogeneia (Official Audio)",
+        "artist": "Λόγος Τιμής",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Λόγος Τιμής - Οικογένεια  Logos Timis - Oikogeneia (Official Audio).mp3"
+      },
+      {
+        "id": "track_055",
+        "title": "Πού Ήσουν",
+        "artist": "Λόγος Τιμής",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Λόγος Τιμής - Πού Ήσουν.mp3"
+      },
+      {
+        "id": "track_056",
+        "title": "Σελήνη (Official Music Video)",
+        "artist": "Λόγος Τιμής",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Λόγος Τιμής - Σελήνη (Official Music Video).mp3"
+      },
+      {
+        "id": "track_057",
+        "title": "Τα Σκυλιά",
+        "artist": "Λόγος Τιμής",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Λόγος Τιμής - Τα Σκυλιά.mp3"
+      },
+      {
+        "id": "track_058",
+        "title": "Το Περιθώριο  Logos Timis - To Perithorio (Official Audio)",
+        "artist": "Λόγος Τιμής",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Λόγος Τιμής - Το Περιθώριο  Logos Timis - To Perithorio (Official Audio).mp3"
+      },
+      {
+        "id": "track_059",
+        "title": "Τρύπα 0",
+        "artist": "Λόγος Τιμής",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Λόγος Τιμής - Τρύπα 0.mp3"
+      },
+      {
+        "id": "track_060",
+        "title": "Φωτιά (Official Audio)",
+        "artist": "Λόγος Τιμής",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Λόγος Τιμής - Φωτιά (Official Audio).mp3"
+      },
+      {
+        "id": "track_061",
+        "title": "Ψυχή (Official Audio)",
+        "artist": "Λόγος Τιμής",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Λόγος Τιμής - Ψυχή (Official Audio).mp3"
+      },
+      {
+        "id": "track_062",
+        "title": "Το Πρώτο Κύμα",
+        "artist": "Ραμμένος Άσσος & still.vi",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Ραμμένος Άσσος & still.vi - Το Πρώτο Κύμα.mp3"
+      },
+      {
+        "id": "track_063",
+        "title": "105",
+        "artist": "Ραμμένος Άσσος",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Ραμμένος Άσσος - 105.mp3"
+      },
+      {
+        "id": "track_064",
+        "title": "Μπύρες Για Το Σπίτι ft. Ταφ Λάθος (Prod. Sumo Beats)",
+        "artist": "Ραμμένος Άσσος",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Ραμμένος Άσσος - Μπύρες Για Το Σπίτι ft. Ταφ Λάθος (Prod. Sumo Beats).mp3"
+      },
+      {
+        "id": "track_065",
+        "title": "Παντομίμα",
+        "artist": "Τaf Λathos",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/Τaf Λathos - Παντομίμα.mp3"
+      },
+      {
+        "id": "track_066",
+        "title": "ΜΙΑ ΝΥΧΤΑ ΠΟΥ ΠΟΝΑΣ ΚΑΙ ΕΓΚΑΤΑΛΕΙΠΕΙΣ",
+        "artist": "ΦΙ ΒΗΤΑ ΣΙΓΜΑ",
+        "duration": "",
+        "src": "https://archive.org/download/PANOS_RADIO_PLAYLIST1/ΦΙ ΒΗΤΑ ΣΙΓΜΑ - ΜΙΑ ΝΥΧΤΑ ΠΟΥ ΠΟΝΑΣ ΚΑΙ ΕΓΚΑΤΑΛΕΙΠΕΙΣ.mp3"
+      }
+    ]
+  }
+}

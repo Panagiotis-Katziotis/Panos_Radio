@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PANOS RADIO</title>
+  <meta name="description" content="THE FREE ONLINE RADIO" />
+  <link id="font-link" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" />
+
+  <style>
+    /* ============================================================
+       CSS CUSTOM PROPERTIES
+       ============================================================ */
+    :root {
+      --bg:         #000000;
+      --surface:    #080808;
+      --surface2:   #0f0f0f;
+      --border:     #1a1a1a;
+      --text:       #c8c8c8;
+      --text-dim:   #444444;
+      --accent:     #8b0000;       /* blood red */
+      --accent-hi:  #b30000;       /* lighter blood red for hover */
+      --accent-dim: #5a0000;       /* darker blood red */
+      --danger:     #8b0000;
+      --radius:     3px;
+      --font:       'Space Mono', 'Courier New', monospace;
+      --transition: 180ms cubic-bezier(0.4, 0, 0.2, 1);
+
+      /* Logo scroll animation vars — driven by JS */
+      --logo-x:     50%;           /* center → left */
+      --logo-y:     0px;
+      --logo-scale: 1;
+      --logo-size:  180px;
+    }
+
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: auto; }
+
+    body {
+      min-height: 100vh;
+      background: #000000;
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 13px;
+      letter-spacing: 0.03em;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Very subtle noise — kept faint on pitch black */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.018;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+    body.no-noise::after { display: none; }
+
+    a { color: inherit; text-decoration: none; }
+    button { font-family: var(--font); cursor: pointer; border: none; background: none; color: inherit; }
+    input[type=range] { cursor: pointer; }
+
+    /* ============================================================
+       LOGO — fixed position, morphs on scroll
+       ============================================================ */
+
+    /*
+      The logo starts centred in the hero zone and shrinks/slides
+      to the top-left corner of the header as the user scrolls down.
+      All interpolation is done in JS via CSS custom properties.
+    */
+    #logo-wrap {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      /* pointer-events off so it never blocks content below */
+      pointer-events: none;
+      z-index: 500;
+    }
+
+    #logo-img {
+      position: absolute;
+      top: var(--logo-y);
+      left: var(--logo-x);
+      width: var(--logo-size);
+      height: var(--logo-size);
+      object-fit: contain;
+      transform: translateX(-50%) scale(var(--logo-scale));
+      transform-origin: top center;
+      will-change: top, left, width, height, transform;
+      /* Smooth out the JS updates */
+      transition: none; /* JS drives this at 60fps, no CSS transition needed */
+      filter: drop-shadow(0 0 20px rgba(139,0,0,0.25));
+    }
+
+    /* ============================================================
+       HERO SPACER — creates scroll room so logo has space to move
+       ============================================================ */
+    #hero {
+      width: 100%;
+      /* Height = roughly logo's centred position zone */
+      height: 260px;
+      flex-shrink: 0;
+      /* Visual: faint red vignette glow at top */
+      background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(139,0,0,0.07) 0%, transparent 70%);
+    }
+
+    /* ============================================================
+       LAYOUT
+       ============================================================ */
+    #app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 16px 64px;
+    }
+
+    /* ============================================================
+       HEADER — sits below hero, logo locks to its top-left
+       ============================================================ */
+    #header {
+      width: 100%;
+      max-width: 720px;
+      /* top padding = space for the small locked logo (40px) */
+      padding: 52px 0 20px;
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+
+    #site-title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    #site-subtitle {
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    #live-badge {
+      margin-left: auto;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--accent-hi);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    #live-badge.visible { display: flex; }
+    #live-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--accent-hi);
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.3; transform: scale(0.75); }
+    }
+
+    /* ============================================================
+       MAIN CONTAINER
+       ============================================================ */
+    #main {
+      width: 100%;
+      max-width: 720px;
+    }
+
+    /* ============================================================
+       LOADING
+       ============================================================ */
+    #loading {
+      text-align: center;
+      padding: 80px 0;
+      color: var(--text-dim);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    #loading-spinner {
+      width: 26px; height: 26px;
+      border: 1px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      margin: 0 auto 16px;
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ============================================================
+       ERROR
+       ============================================================ */
+    #error-msg {
+      display: none;
+      background: #0a0000;
+      border: 1px solid var(--accent-dim);
+      color: var(--accent-hi);
+      padding: 16px 20px;
+      border-radius: var(--radius);
+      font-size: 12px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    #error-msg.visible { display: block; }
+
+    /* ============================================================
+       LIVESTREAM
+       ============================================================ */
+    #livestream-section { display: none; }
+    #livestream-section.visible { display: block; }
+
+    #stream-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    #stream-embed-wrap {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    #stream-embed-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    #stream-offline {
+      display: none;
+      padding: 40px;
+      text-align: center;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text-dim);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    #stream-offline.visible { display: block; }
+
+    /* ============================================================
+       STREAM SCHEDULE
+       ============================================================ */
+    #stream-schedule {
+      display: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    #stream-schedule.visible { display: block; }
+
+    #schedule-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+    }
+    #schedule-title {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      flex: 1;
+    }
+    #schedule-now-label {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--accent-hi);
+      text-transform: uppercase;
+      display: none;
+    }
+    #schedule-now-label.visible { display: block; }
+
+    #schedule-list { list-style: none; }
+
+    .schedule-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      transition: background var(--transition);
+    }
+    .schedule-row:last-child { border-bottom: none; }
+    .schedule-row.active {
+      background: var(--surface2);
+      box-shadow: inset 2px 0 0 var(--accent);
+    }
+    .schedule-row.active .schedule-day,
+    .schedule-row.active .schedule-time { color: var(--accent-hi); }
+
+    .schedule-day {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text);
+      width: 30px;
+      flex-shrink: 0;
+      text-transform: uppercase;
+    }
+    .schedule-time {
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 0.04em;
+      flex: 1;
+    }
+    .schedule-tag {
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 2px;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      flex-shrink: 0;
+    }
+    .schedule-row.active .schedule-tag {
+      border-color: var(--accent-dim);
+      color: var(--accent-hi);
+      background: rgba(139,0,0,0.12);
+    }
+
+    /* ============================================================
+       AUDIO PLAYER
+       ============================================================ */
+    #player-section { display: none; }
+    #player-section.visible { display: block; }
+
+    /* Now Playing */
+    #now-playing {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 2px;
+      /* Subtle red left-edge glow */
+      box-shadow: inset 3px 0 0 var(--accent-dim);
+    }
+
+    #np-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    #np-track-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent-hi);
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #np-track-artist {
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      margin-bottom: 20px;
+    }
+
+    /* Progress bar */
+    #progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    #time-current, #time-total {
+      font-size: 10px;
+      color: var(--text-dim);
+      width: 36px;
+      flex-shrink: 0;
+      letter-spacing: 0.05em;
+    }
+    #time-total { text-align: right; }
+
+    .slider-track {
+      flex: 1;
+      height: 2px;
+      background: var(--border);
+      border-radius: 1px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    #progress-fill {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      background: var(--accent);
+      border-radius: 1px;
+      pointer-events: none;
+      transition: width 0.1s linear;
+      width: 0%;
+    }
+
+    #progress-input {
+      position: absolute;
+      inset: -8px 0;
+      width: 100%;
+      height: calc(100% + 16px);
+      opacity: 0;
+      margin: 0;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    /* Controls */
+    #controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ctrl-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px; height: 36px;
+      border-radius: var(--radius);
+      color: var(--text-dim);
+      transition: color var(--transition), background var(--transition);
+      flex-shrink: 0;
+    }
+    .ctrl-btn:hover { color: var(--text); background: var(--surface2); }
+    .ctrl-btn.active { color: var(--accent-hi); }
+    .ctrl-btn svg { display: block; }
+
+    #btn-play-pause {
+      width: 44px; height: 44px;
+      background: var(--accent);
+      color: #ffffff;
+      border-radius: var(--radius);
+      margin: 0 4px;
+      transition: background var(--transition), transform var(--transition);
+    }
+    #btn-play-pause:hover  { background: var(--accent-hi); transform: scale(1.04); }
+    #btn-play-pause:active { transform: scale(0.97); }
+
+    /* Volume */
+    #volume-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    #volume-icon { color: var(--text-dim); cursor: pointer; flex-shrink: 0; }
+
+    .vol-slider-track {
+      width: 72px;
+      height: 2px;
+      background: var(--border);
+      border-radius: 1px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    #volume-fill {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      background: var(--text-dim);
+      border-radius: 1px;
+      pointer-events: none;
+      width: 80%;
+    }
+
+    #volume-input {
+      position: absolute;
+      inset: -8px 0;
+      width: 100%;
+      height: calc(100% + 16px);
+      opacity: 0;
+      margin: 0;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    /* ============================================================
+       PLAYLIST
+       ============================================================ */
+    #playlist {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-top: 2px;
+    }
+
+    #playlist-header {
+      display: flex;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+    }
+
+    #playlist-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      flex: 1;
+    }
+
+    #playlist-count {
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+
+    #playlist-list { list-style: none; }
+
+    .track-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background var(--transition);
+      position: relative;
+    }
+    .track-item:last-child { border-bottom: none; }
+    .track-item:hover { background: var(--surface2); }
+    .track-item.playing { background: var(--surface2); box-shadow: inset 2px 0 0 var(--accent); }
+    .track-item.playing .track-num { display: none; }
+    .track-item.playing .track-playing-icon { display: flex; }
+
+    .track-num {
+      font-size: 11px;
+      color: var(--text-dim);
+      width: 20px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .track-playing-icon {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      flex-shrink: 0;
+      color: var(--accent-hi);
+    }
+
+    .bar-wrap {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 12px;
+    }
+    .bar-wrap span {
+      display: block;
+      width: 2px;
+      background: var(--accent-hi);
+      border-radius: 1px;
+      animation: bar-bounce 0.8s ease-in-out infinite alternate;
+    }
+    .bar-wrap span:nth-child(1) { height: 6px;  animation-delay: 0s; }
+    .bar-wrap span:nth-child(2) { height: 10px; animation-delay: 0.15s; }
+    .bar-wrap span:nth-child(3) { height: 8px;  animation-delay: 0.3s; }
+
+    @keyframes bar-bounce {
+      from { transform: scaleY(0.35); }
+      to   { transform: scaleY(1.2); }
+    }
+
+    #player-section.paused .bar-wrap span { animation-play-state: paused; }
+
+    .track-info { flex: 1; overflow: hidden; }
+
+    .track-title {
+      font-size: 12px;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
+    }
+    .track-item.playing .track-title { color: var(--accent-hi); }
+
+    .track-artist {
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+    }
+
+    .track-duration {
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       FOOTER
+       ============================================================ */
+    #footer {
+      width: 100%;
+      max-width: 720px;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #footer-text    { font-size: 10px; color: var(--text-dim); letter-spacing: 0.1em; }
+    #mode-indicator { font-size: 10px; color: var(--text-dim); letter-spacing: 0.15em; text-transform: uppercase; }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 480px) {
+      :root { --logo-size: 130px; }
+      #hero { height: 200px; }
+      #site-title { font-size: 18px; }
+      #np-track-title { font-size: 15px; }
+      #volume-wrap { display: none; }
+      .ctrl-btn { width: 32px; height: 32px; }
+      #btn-play-pause { width: 40px; height: 40px; }
+    }
+
+    /* ============================================================
+       ENTRY ANIMATIONS
+       ============================================================ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    #header { animation: fadeUp 0.5s ease both 0.05s; }
+    #main   { animation: fadeUp 0.5s ease both 0.12s; }
+    #footer { animation: fadeUp 0.5s ease both 0.2s; }
+  </style>
+</head>
+<body>
+
+<!-- ── LOGO (fixed, scroll-morphs) ──────────────────────────── -->
+<div id="logo-wrap" aria-hidden="true">
+  <img id="logo-img" src="./image.png" alt="" />
+</div>
+
+<div id="app">
+
+  <!-- Hero spacer — gives vertical room for the centred logo -->
+  <div id="hero"></div>
+
+  <!-- ── HEADER ──────────────────────────────────────────────── -->
+  <header id="header">
+    <span id="site-title">PANOS RADIO</span>
+    <span id="site-subtitle">THE FREE ONLINE RADIO</span>
+    <span id="live-badge">
+      <span id="live-dot"></span>
+      ΝΟΤ LIVE
+    </span>
+  </header>
+
+  <!-- ── MAIN ────────────────────────────────────────────────── -->
+  <main id="main">
+
+    <div id="loading">
+      <div id="loading-spinner"></div>
+      INITIALISING
+    </div>
+
+    <div id="error-msg" role="alert"></div>
+
+    <!-- Livestream -->
+    <section id="livestream-section" aria-label="Livestream">
+      <p id="stream-label">NOW STREAMING</p>
+      <div id="stream-embed-wrap"></div>
+      <div id="stream-offline" role="status">
+        ◎ stream is currently offline<br>
+        <span style="font-size:10px;margin-top:8px;display:block;">fallback audio playlist below</span>
+      </div>
+
+      <!-- Stream schedule -->
+      <div id="stream-schedule" aria-label="Stream schedule">
+        <div id="schedule-header">
+          <span id="schedule-title">LIVE SCHEDULE</span>
+          <span id="schedule-now-label">● ON AIR NOW</span>
+        </div>
+        <ul id="schedule-list"></ul>
+      </div>
+
+    </section>
+
+    <!-- Audio Player -->
+    <section id="player-section" aria-label="Audio player">
+
+      <div id="now-playing" aria-live="polite">
+        <p id="np-label">NOW PLAYING</p>
+        <p id="np-track-title">—</p>
+        <p id="np-track-artist">—</p>
+
+        <div id="progress-wrap" role="group" aria-label="Playback progress">
+          <span id="time-current">0:00</span>
+          <div class="slider-track" id="progress-track" aria-hidden="true">
+            <div id="progress-fill"></div>
+            <input type="range" id="progress-input" min="0" max="1000" value="0" aria-label="Seek" step="1" />
+          </div>
+          <span id="time-total">0:00</span>
+        </div>
+
+        <div id="controls" role="group" aria-label="Playback controls">
+
+          <!-- Shuffle -->
+          <button class="ctrl-btn" id="btn-shuffle" title="Shuffle" aria-pressed="false" aria-label="Shuffle">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="16 3 21 3 21 8"/><polyline points="16 21 21 21 21 16"/>
+              <path d="M4 20 L21 3"/><path d="M4 4 L14 14"/><path d="M17 17 L21 21"/>
+            </svg>
+          </button>
+
+          <!-- Prev -->
+          <button class="ctrl-btn" id="btn-prev" title="Previous" aria-label="Previous track">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/>
+            </svg>
+          </button>
+
+          <!-- Play/Pause -->
+          <button id="btn-play-pause" title="Play / Pause" aria-label="Play or pause">
+            <svg id="icon-play"  width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <svg id="icon-pause" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+          </button>
+
+          <!-- Next -->
+          <button class="ctrl-btn" id="btn-next" title="Next" aria-label="Next track">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M16 18h2V6h-2v12zM4 18l8.5-6L4 6v12z"/>
+            </svg>
+          </button>
+
+          <!-- Repeat -->
+          <button class="ctrl-btn" id="btn-repeat" title="Repeat" aria-label="Repeat mode" aria-pressed="false">
+            <svg id="icon-repeat-all" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+              <polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+            </svg>
+            <svg id="icon-repeat-one" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+              <polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+              <polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+              <path d="M11 10h1v4"/>
+            </svg>
+          </button>
+
+          <!-- Volume -->
+          <div id="volume-wrap" role="group" aria-label="Volume">
+            <svg id="volume-icon" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+            </svg>
+            <div class="vol-slider-track" aria-hidden="true">
+              <div id="volume-fill"></div>
+              <input type="range" id="volume-input" min="0" max="100" value="80" aria-label="Volume" step="1" />
+            </div>
+          </div>
+
+        </div><!-- /controls -->
+      </div><!-- /now-playing -->
+
+      <!-- Playlist -->
+      <div id="playlist">
+        <div id="playlist-header">
+          <span id="playlist-label">PLAYLIST</span>
+          <span id="playlist-count"></span>
+        </div>
+        <ul id="playlist-list" role="list" aria-label="Track list"></ul>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ── FOOTER ──────────────────────────────────────────────── -->
+  <footer id="footer">
+    <span id="footer-text">PANOS RADIO</span>
+    <span id="mode-indicator">—</span>
+  </footer>
+
+</div><!-- /app -->
+
+<audio id="audio" preload="none" aria-hidden="true"></audio>
+
+<script>
+/* ================================================================
+   SIGNAL PLAYER — main.js
+   ================================================================ */
+(function () {
+  'use strict';
+
+  /* ── ELEMENT REFS ─────────────────────────────────────────── */
+  const $ = id => document.getElementById(id);
+
+  const elLoading       = $('loading');
+  const elError         = $('error-msg');
+  const elSiteTitle     = $('site-title');
+  const elSiteSubtitle  = $('site-subtitle');
+  const elLiveBadge     = $('live-badge');
+  const elModeIndicator = $('mode-indicator');
+
+  const elStreamSection = $('livestream-section');
+  const elStreamEmbed   = $('stream-embed-wrap');
+  const elStreamOffline = $('stream-offline');
+
+  const elPlayerSection = $('player-section');
+  const elNpTitle       = $('np-track-title');
+  const elNpArtist      = $('np-track-artist');
+  const elTimeCurrent   = $('time-current');
+  const elTimeTotal     = $('time-total');
+  const elProgressFill  = $('progress-fill');
+  const elProgressInput = $('progress-input');
+  const elPlayPause     = $('btn-play-pause');
+  const elIconPlay      = $('icon-play');
+  const elIconPause     = $('icon-pause');
+  const elPrev          = $('btn-prev');
+  const elNext          = $('btn-next');
+  const elShuffle       = $('btn-shuffle');
+  const elRepeat        = $('btn-repeat');
+  const elIconRepeatAll = $('icon-repeat-all');
+  const elIconRepeatOne = $('icon-repeat-one');
+  const elVolIcon       = $('volume-icon');
+  const elVolFill       = $('volume-fill');
+  const elVolInput      = $('volume-input');
+  const elPlaylistList  = $('playlist-list');
+  const elPlaylistCount = $('playlist-count');
+  const elFontLink      = $('font-link');
+  const elHero          = $('hero');
+  const elLogoImg       = $('logo-img');
+  const elLogoWrap      = $('logo-wrap');
+  const elHeader        = $('header');
+  const audio           = $('audio');
+  const root            = document.documentElement;
+
+  /* ── STATE ────────────────────────────────────────────────── */
+  let config         = null;
+  let tracks         = [];
+  let originalTracks = [];
+  let currentIndex   = 0;
+  let isPlaying      = false;
+  let isShuffle      = false;
+  let repeatMode     = 'none';
+  let isMuted        = false;
+  let lastVolume     = 0.8;
+  let seekingActive  = false;
+
+  /* ── LOGO SCROLL MORPH ────────────────────────────────────── */
+  /*
+    Behaviour:
+      • scroll = 0  → logo centred horizontally in hero, large
+      • scroll ≥ heroHeight → logo small, anchored top-left of header
+
+    We interpolate every property linearly between those two states.
+  */
+
+  // Target states (populated after layout is known)
+  const LOGO_START = {
+    // centre of viewport horizontally, vertically centred in hero
+    x: 50,          // vw percentage fed to CSS left
+    yPx: 0,         // px from top of viewport
+    size: 180,       // px — overridden from CSS var on mobile
+    usePercent: true // x is in vw%
+  };
+
+  const LOGO_END = {
+    xPx: 16,         // px from left edge (padding match)
+    yPx: 10,         // px from top (small gap from viewport top)
+    size: 36          // px — compact header logo
+  };
+
+  function getLogoStartSize() {
+    // Read from CSS custom property so mobile override works
+    const val = getComputedStyle(root).getPropertyValue('--logo-size').trim();
+    return parseInt(val, 10) || 180;
+  }
+
+  function updateLogoScroll() {
+    const heroH    = elHero.offsetHeight;  // scroll distance over which morph happens
+    const scrollY  = window.scrollY;
+    const t        = Math.min(1, Math.max(0, scrollY / heroH)); // 0 → 1
+
+    const startSize = getLogoStartSize();
+    const endSize   = LOGO_END.size;
+    const size      = startSize + (endSize - startSize) * t;
+
+    // Vertical: start at (heroH/2 - size/2), end at LOGO_END.yPx
+    const startY = heroH / 2 - startSize / 2;
+    const endY   = LOGO_END.yPx;
+    const y      = startY + (endY - startY) * t;
+
+    // Horizontal: start at 50vw (centre), end at LOGO_END.xPx px
+    // We switch between percent and px by lerping the pixel value
+    const startX = window.innerWidth * 0.5;  // px equivalent of 50vw
+    const endX   = LOGO_END.xPx + size / 2;   // offset so left edge lands at xPx
+    const x      = startX + (endX - startX) * t;
+
+    // Apply directly to style (no CSS var round-trip for perf)
+    elLogoImg.style.top       = y + 'px';
+    elLogoImg.style.left      = x + 'px';
+    elLogoImg.style.width     = size + 'px';
+    elLogoImg.style.height    = size + 'px';
+    // translateX(-50%) keeps the anchor point at centre of image
+    elLogoImg.style.transform = 'translateX(-50%)';
+  }
+
+  // Run on scroll (passive for perf) and on resize
+  window.addEventListener('scroll',  updateLogoScroll, { passive: true });
+  window.addEventListener('resize',  updateLogoScroll, { passive: true });
+  // Initial position
+  updateLogoScroll();
+
+  /* ── HELPERS ──────────────────────────────────────────────── */
+
+  function fmtTime(sec) {
+    if (!isFinite(sec) || sec < 0) return '0:00';
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  }
+
+  function showError(msg) {
+    elError.textContent = msg;
+    elError.classList.add('visible');
+  }
+
+  function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+  }
+
+  function applyTheme(theme) {
+    if (!theme) return;
+    if (theme.accent) {
+      root.style.setProperty('--accent',     theme.accent);
+      root.style.setProperty('--accent-hi',  theme.accent);
+      root.style.setProperty('--accent-dim', theme.accent);
+    }
+    if (theme.mode === 'light') {
+      root.style.setProperty('--bg',       '#f0f0f0');
+      root.style.setProperty('--surface',  '#e8e8e8');
+      root.style.setProperty('--surface2', '#dcdcdc');
+      root.style.setProperty('--border',   '#cccccc');
+      root.style.setProperty('--text',     '#111111');
+      root.style.setProperty('--text-dim', '#888888');
+    }
+    if (theme.backgroundNoise === false) document.body.classList.add('no-noise');
+    if (theme.fontDisplay && theme.fontDisplay !== elFontLink.href) {
+      elFontLink.href = theme.fontDisplay;
+    }
+  }
+
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  /* ── CONFIG ───────────────────────────────────────────────── */
+
+  async function loadConfig() {
+    try {
+      const res = await fetch('./config.json?v=' + Date.now());
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      config = await res.json();
+    } catch (err) {
+      showError(`Could not load config.json (${err.message}). Make sure the file exists alongside index.html.`);
+      elLoading.style.display = 'none';
+      return;
+    }
+    init();
+  }
+
+  /* ── INIT ─────────────────────────────────────────────────── */
+
+  function init() {
+    if (config.site) {
+      if (config.site.title)    { elSiteTitle.textContent = config.site.title; document.title = config.site.title; }
+      if (config.site.subtitle)   elSiteSubtitle.textContent = config.site.subtitle;
+    }
+
+    applyTheme(config.theme);
+
+    originalTracks = (config.playlist && config.playlist.tracks) || [];
+    tracks         = [...originalTracks];
+
+    isShuffle  = !!(config.playlist && config.playlist.shuffle);
+    repeatMode = (config.playlist && config.playlist.repeat) || 'none';
+    lastVolume = (config.playlist && config.playlist.volume != null) ? config.playlist.volume : 0.8;
+
+    audio.volume          = lastVolume;
+    elVolInput.value      = Math.round(lastVolume * 100);
+    elVolFill.style.width = (lastVolume * 100) + '%';
+
+    updateShuffleUI();
+    updateRepeatUI();
+
+    elLoading.style.display = 'none';
+
+    const ls = config.livestream;
+    if (ls && ls.enabled) {
+      initStream(ls);
+    } else {
+      showAudioPlayer();
+    }
+  }
+
+  /* ── LIVESTREAM ───────────────────────────────────────────── */
+
+  function initStream(ls) {
+    elStreamSection.classList.add('visible');
+
+    if (ls.platform !== 'youtube') {
+      showError(`Unsupported platform: "${ls.platform}". Only "youtube" is supported.`);
+      showAudioPlayer();
+      return;
+    }
+
+    let embedSrc;
+    if (ls.liveVideoId) {
+      embedSrc = `https://www.youtube-nocookie.com/embed/${ls.liveVideoId}?autoplay=0&rel=0`;
+    } else if (ls.channelId) {
+      embedSrc = `https://www.youtube-nocookie.com/embed/live_stream?channel=${ls.channelId}&rel=0`;
+    } else {
+      showError('Livestream enabled but no channelId or liveVideoId set in config.json.');
+      showAudioPlayer();
+      return;
+    }
+
+    const iframe = document.createElement('iframe');
+    iframe.src             = embedSrc;
+    iframe.allow           = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+    iframe.allowFullscreen = true;
+    iframe.title           = 'Livestream';
+    elStreamEmbed.appendChild(iframe);
+
+    elLiveBadge.classList.add('visible');
+    elModeIndicator.textContent = 'STREAM MODE';
+
+    initSchedule(ls.schedule || null);
+
+    if (originalTracks.length) showAudioPlayer(true);
+  }
+
+  /* ── STREAM SCHEDULE ─────────────────────────────────────── */
+
+  /*
+    Schedule entries in config.json (optional):
+    "schedule": [
+      { "day": "MON", "start": "20:00", "end": "22:00", "label": "HIP-HOP" },
+      ...
+    ]
+    "day" can be: MON TUE WED THU FRI SAT SUN
+    Times are 24-hour local time.
+
+    If no schedule is provided, a default weekly schedule is shown.
+  */
+
+  const DEFAULT_SCHEDULE = [
+    { day: 'SAT', start: '10:00', end: '11:00', label: 'POD CAST' },
+    { day: 'SAT', start: '18:40', end: '22:00', label: 'LOW BAP' },
+    { day: 'SUN', start: '18:30', end: '20:00', label: 'MIXED' },
+  ];
+
+  const DAY_NAMES = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+
+  function initSchedule(scheduleData) {
+    const elSchedule   = $('stream-schedule');
+    const elSchedList  = $('schedule-list');
+    const elNowLabel   = $('schedule-now-label');
+    if (!elSchedule) return;
+
+    const rows = (scheduleData && scheduleData.length) ? scheduleData : DEFAULT_SCHEDULE;
+
+    const now      = new Date();
+    const todayIdx = now.getDay();                      // 0=Sun … 6=Sat
+    const todayDay = DAY_NAMES[todayIdx];
+    const nowMins  = now.getHours() * 60 + now.getMinutes();
+
+    let anyActive = false;
+
+    rows.forEach(entry => {
+      const li = document.createElement('li');
+      li.className = 'schedule-row';
+
+      // Parse start/end into minutes-of-day
+      const [sh, sm] = entry.start.split(':').map(Number);
+      const startMins = sh * 60 + sm;
+      let   [eh, em] = entry.end.split(':').map(Number);
+      let   endMins  = eh * 60 + em;
+      if (endMins <= startMins) endMins += 24 * 60; // midnight wrap
+
+      // Is this slot live right now?
+      const isToday  = entry.day.toUpperCase() === todayDay;
+      const inWindow = nowMins >= startMins && nowMins < endMins;
+      const isActive = isToday && inWindow;
+      if (isActive) { li.classList.add('active'); anyActive = true; }
+
+      // Format end time (handle midnight wrap display)
+      const displayEnd = entry.end === '00:00' ? '00:00' : entry.end;
+
+      li.innerHTML = `
+        <span class="schedule-day">${escHtml(entry.day.toUpperCase())}</span>
+        <span class="schedule-time">${escHtml(entry.start)} – ${escHtml(displayEnd)}</span>
+        <span class="schedule-tag">${escHtml(entry.label || 'LIVE')}</span>
+      `;
+      elSchedList.appendChild(li);
+    });
+
+    if (anyActive) elNowLabel.classList.add('visible');
+    elSchedule.classList.add('visible');
+  }
+
+  /* ── AUDIO PLAYER ─────────────────────────────────────────────── */
+
+  function showAudioPlayer(asSecondary = false) {
+    if (!originalTracks.length) {
+      if (!asSecondary) {
+        elModeIndicator.textContent = 'NO TRACKS';
+        showError('No tracks found in config.json playlist.tracks.');
+      }
+      return;
+    }
+
+    elPlayerSection.classList.add('visible');
+    elModeIndicator.textContent = asSecondary ? 'PLAYLIST' : 'AUDIO MODE';
+
+    if (isShuffle) shuffleArray(tracks);
+
+    buildPlaylist();
+
+    const randomStart = Math.floor(Math.random() * tracks.length);
+    if (config.playlist && config.playlist.autoplay) {
+      loadTrack(randomStart, true);
+    } else {
+      loadTrack(randomStart, false);
+    }
+  }
+
+  /* ── PLAYLIST ─────────────────────────────────────────────── */
+
+  function buildPlaylist() {
+    elPlaylistList.innerHTML = '';
+    elPlaylistCount.textContent = `${tracks.length} TRACK${tracks.length !== 1 ? 'S' : ''}`;
+
+    tracks.forEach((track, idx) => {
+      const li = document.createElement('li');
+      li.className   = 'track-item';
+      li.dataset.idx = idx;
+      li.setAttribute('role', 'listitem');
+      li.setAttribute('tabindex', '0');
+      li.setAttribute('aria-label', `${track.title} by ${track.artist || 'Unknown'}`);
+      li.innerHTML = `
+        <span class="track-num">${idx + 1}</span>
+        <span class="track-playing-icon" aria-hidden="true">
+          <span class="bar-wrap"><span></span><span></span><span></span></span>
+        </span>
+        <span class="track-info">
+          <span class="track-title">${escHtml(track.title || 'Untitled')}</span>
+          ${track.artist ? `<span class="track-artist">${escHtml(track.artist)}</span>` : ''}
+        </span>
+        <span class="track-duration">${escHtml(track.duration || '')}</span>
+      `;
+      li.addEventListener('click', () => loadTrack(idx, true));
+      li.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); loadTrack(idx, true); }
+      });
+      elPlaylistList.appendChild(li);
+    });
+  }
+
+  function updatePlaylistActive() {
+    document.querySelectorAll('.track-item').forEach((el, i) => {
+      el.classList.toggle('playing', i === currentIndex);
+    });
+  }
+
+  /* ── TRACK LOADING ────────────────────────────────────────── */
+
+  function loadTrack(idx, autoPlay = false) {
+    if (idx < 0 || idx >= tracks.length) return;
+    currentIndex = idx;
+    const track = tracks[currentIndex];
+
+    elNpTitle.textContent  = track.title  || 'Untitled';
+    elNpArtist.textContent = track.artist || '—';
+
+    elProgressFill.style.width = '0%';
+    elProgressInput.value      = 0;
+    elTimeCurrent.textContent  = '0:00';
+    elTimeTotal.textContent    = track.duration || '—';
+
+    audio.src     = track.src;
+    audio.preload = 'auto';
+
+    updatePlaylistActive();
+    if (autoPlay) play(); else setPlayingState(false);
+  }
+
+  /* ── PLAYBACK ─────────────────────────────────────────────── */
+
+  function play() {
+    const p = audio.play();
+    if (p !== undefined) {
+      p.then(() => setPlayingState(true))
+       .catch(err => { console.warn('Autoplay prevented:', err.message); setPlayingState(false); });
+    }
+  }
+
+  function pause() { audio.pause(); setPlayingState(false); }
+
+  function setPlayingState(playing) {
+    isPlaying = playing;
+    elIconPlay.style.display  = playing ? 'none' : '';
+    elIconPause.style.display = playing ? ''     : 'none';
+    elPlayerSection.classList.toggle('paused', !playing);
+  }
+
+  function playNext() {
+    if (repeatMode === 'one') { audio.currentTime = 0; play(); return; }
+    let next = currentIndex + 1;
+    if (next >= tracks.length) {
+      if (repeatMode === 'all') next = 0; else { setPlayingState(false); return; }
+    }
+    loadTrack(next, true);
+  }
+
+  function playPrev() {
+    if (audio.currentTime > 3) { audio.currentTime = 0; return; }
+    let prev = currentIndex - 1;
+    if (prev < 0) prev = repeatMode === 'all' ? tracks.length - 1 : 0;
+    loadTrack(prev, isPlaying);
+  }
+
+  /* ── SHUFFLE & REPEAT ─────────────────────────────────────── */
+
+  function toggleShuffle() {
+    isShuffle = !isShuffle;
+    if (isShuffle) {
+      const cur = tracks[currentIndex];
+      shuffleArray(tracks);
+      const ni = tracks.findIndex(t => t === cur || t.id === cur.id);
+      if (ni > -1) { tracks.splice(ni, 1); tracks.unshift(cur); }
+      currentIndex = 0;
+    } else {
+      const cur = tracks[currentIndex];
+      tracks = [...originalTracks];
+      const ni = tracks.findIndex(t => t === cur || t.id === cur.id);
+      currentIndex = ni > -1 ? ni : 0;
+    }
+    buildPlaylist();
+    updatePlaylistActive();
+    updateShuffleUI();
+  }
+
+  function cycleRepeat() {
+    const modes = ['none', 'all', 'one'];
+    repeatMode = modes[(modes.indexOf(repeatMode) + 1) % modes.length];
+    updateRepeatUI();
+  }
+
+  function updateShuffleUI() {
+    elShuffle.classList.toggle('active', isShuffle);
+    elShuffle.setAttribute('aria-pressed', String(isShuffle));
+  }
+
+  function updateRepeatUI() {
+    const on = repeatMode !== 'none';
+    elRepeat.classList.toggle('active', on);
+    elRepeat.setAttribute('aria-pressed', String(on));
+    elIconRepeatAll.style.display = (repeatMode === 'one') ? 'none' : '';
+    elIconRepeatOne.style.display = (repeatMode === 'one') ? ''     : 'none';
+  }
+
+  /* ── VOLUME ───────────────────────────────────────────────── */
+
+  function setVolume(v) {
+    v = Math.max(0, Math.min(1, v));
+    audio.volume = v; audio.muted = false; isMuted = false;
+    if (v > 0) lastVolume = v;
+    elVolFill.style.width = (v * 100) + '%';
+    elVolInput.value      = Math.round(v * 100);
+  }
+
+  function toggleMute() {
+    isMuted = !isMuted;
+    audio.muted = isMuted;
+    elVolFill.style.width = isMuted ? '0%' : (audio.volume * 100) + '%';
+    elVolInput.value      = isMuted ? 0    : Math.round(audio.volume * 100);
+  }
+
+  /* ── PROGRESS ─────────────────────────────────────────────── */
+
+  function updateProgress() {
+    if (!seekingActive && audio.duration) {
+      const pct = (audio.currentTime / audio.duration) * 100;
+      elProgressFill.style.width = pct + '%';
+      elProgressInput.value      = Math.round((audio.currentTime / audio.duration) * 1000);
+      elTimeCurrent.textContent  = fmtTime(audio.currentTime);
+    }
+  }
+
+  /* ── EVENT LISTENERS ──────────────────────────────────────── */
+
+  elPlayPause.addEventListener('click', () => { if (isPlaying) pause(); else play(); });
+  elPrev.addEventListener('click', playPrev);
+  elNext.addEventListener('click', playNext);
+  elShuffle.addEventListener('click', toggleShuffle);
+  elRepeat.addEventListener('click', cycleRepeat);
+
+  elProgressInput.addEventListener('mousedown',  () => { seekingActive = true; });
+  elProgressInput.addEventListener('touchstart', () => { seekingActive = true; }, { passive: true });
+  elProgressInput.addEventListener('input', () => {
+    if (audio.duration) {
+      elTimeCurrent.textContent  = fmtTime((elProgressInput.value / 1000) * audio.duration);
+      elProgressFill.style.width = ((elProgressInput.value / 1000) * 100) + '%';
+    }
+  });
+  elProgressInput.addEventListener('change', () => {
+    if (audio.duration) audio.currentTime = (elProgressInput.value / 1000) * audio.duration;
+    seekingActive = false;
+  });
+
+  elVolInput.addEventListener('input', () => setVolume(elVolInput.value / 100));
+  elVolIcon.addEventListener('click', toggleMute);
+
+  audio.addEventListener('timeupdate',      updateProgress);
+  audio.addEventListener('ended',           playNext);
+  audio.addEventListener('loadedmetadata',  () => { elTimeTotal.textContent = fmtTime(audio.duration); });
+  audio.addEventListener('error',           () => {
+    const code = audio.error ? audio.error.code : '?';
+    showError(`Failed to load audio (error ${code}). Check your Google Drive link is a direct download URL and the file is shared publicly.`);
+    setPlayingState(false);
+  });
+  audio.addEventListener('waiting',  () => { elProgressFill.style.opacity = '0.4'; });
+  audio.addEventListener('playing',  () => { elProgressFill.style.opacity = '1'; setPlayingState(true); });
+
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT') return;
+    switch (e.code) {
+      case 'Space':       e.preventDefault(); if (isPlaying) pause(); else play(); break;
+      case 'ArrowRight':  if (audio.duration) audio.currentTime = Math.min(audio.duration, audio.currentTime + 5); break;
+      case 'ArrowLeft':   if (audio.duration) audio.currentTime = Math.max(0, audio.currentTime - 5); break;
+      case 'ArrowUp':     e.preventDefault(); setVolume(audio.volume + 0.05); break;
+      case 'ArrowDown':   e.preventDefault(); setVolume(audio.volume - 0.05); break;
+      case 'KeyN':        playNext(); break;
+      case 'KeyP':        playPrev(); break;
+      case 'KeyM':        toggleMute(); break;
+    }
+  });
+
+  /* ── BOOT ─────────────────────────────────────────────────── */
+  loadConfig();
+
+})();
+</script>
+</body>
+</html>
